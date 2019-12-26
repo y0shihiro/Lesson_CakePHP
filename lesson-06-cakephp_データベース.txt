@@ -1,0 +1,74 @@
+[Users]
+・ユーザー情報
+id
+username
+password
+role
+-
+(hasMany / Biditems) id : user_id
+==>Biditems
+(hasMany / Bidinfo) id : user_id
+==>Bidinfo
+(hasMany / Bidrequests) id : user_id
+==>Bidrequests
+(hasMany / Bidmessages) id : user_id
+==>Bidmessages
+
+[Biditems]
+・商品情報
+id
+user_id
+name
+finished
+endtime
+created
+-
+(belongTo / Users) user_id : id
+==>Users
+(hasOne / Bidinfo) id : biditem_id
+==>Bidinfo
+(hasMany / Bidrequests) id : biditem_id
+==>Bidrequests
+
+[Bidinfo]
+・落札情報
+id
+biditem_id
+user_id
+price
+created
+-
+(belongTo / Users) user_id : id
+==>Users
+(belongTo / Biditems) biditem_id : id
+==>Biditems
+(hasMany / Bidmessages) id : bidinfo_id
+==>Bidmessages
+
+[Bidrequests]
+・入札情報
+id
+biditem_id
+user_id
+price
+created
+-
+(belongTo / Users) user_id : id
+==>Users
+(belongTo / Biditems) biditem_id : id
+==>Biditems
+
+[Bidmessages]
+・取引メッセージ
+id
+bidinfo_id
+user_id
+message
+created
+-
+(belongTo / Users) user_id : id
+==>Users
+(belongTo / Bidinfo) bidinfo_id : id
+==>Bidinfo
+
+[データベース設計]
