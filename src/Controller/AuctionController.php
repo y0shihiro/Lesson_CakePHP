@@ -4,7 +4,10 @@ namespace App\Controller;
 use App\Controller\AppController;
 
 use Cake\Event\Event;
+use Cake\Filesystem\File;
+use Cake\Filesystem\Folder;
 use Exception;
+use RuntimeException;
 
 class AuctionController extends AuctionBaseController
 {
@@ -87,8 +90,18 @@ class AuctionController extends AuctionBaseController
     public function add()
     {
         $biditem = $this->Biditems->newEntity();
-        if ($this->request->isPost()) {
-            $biditem = $this->Biditems->patchEntity($biditem, $this->request->getData());
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $this->log($this->request->data['file_name'], LOG_DEBUG);
+            $biditem = $this->Biditems->patchEntity($biditem, $this->request->data);
+            $dir = realpath(WWW_ROOT . "upimg/");
+            $limitFileSize = 1024 * 1024;
+            try {
+                $this->loadComponent('UploadImage');
+                $biditem->file_name = $this->UploadImage->fileUpload($this->request->data['file_name'], $dir, $limitFileSize);
+            } catch (RuntimeException $e) {
+                $this->Flash->error(__('ファイルのアップロードができませんでした.'));
+                $this->Flash->error(__($e->getMessage()));
+            }
             if ($this->Biditems->save($biditem)) {
                 $this->Flash->success(__('保存しました。'));
 

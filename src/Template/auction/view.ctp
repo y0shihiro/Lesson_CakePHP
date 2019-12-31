@@ -1,6 +1,10 @@
 <h2>「<?=$biditem->name ?>」の情報</h2>
 <table class="vertical-table">
   <tr>
+    <th scope="row"></th>
+    <td><?=$this->Html->image('../upimg/' . $biditem->file_name, array('width' => 400)) ?></td>
+  </tr>
+  <tr>
     <th class="small" scope="row">出品者</th>
     <td><?= $biditem->has('user') ? $biditem->user->username : '' ?></td>
   </tr>

@@ -5,6 +5,7 @@
 /logs/*
 /tmp/*
 /vendor/*
+/webroot/upimg/*
 
 # OS generated files #
 ######################
