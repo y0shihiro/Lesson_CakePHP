@@ -1,5 +1,6 @@
 <h2>ミニオークション！</h2>
 <h3>※出品されている商品</h3>
+<p><?= $this->Paginator->counter(['format' => '全{{pages}}ページ中{{page}}ページ目を表示しています']) ?></p>
 <table cellpadding="0" cellspacing="0">
 <thead>
 <tr>
@@ -19,6 +20,9 @@
 <td><?= h($biditem->endtime) ?></td>
 <td class="actions">
     <?= $this->Html->link(__('View'), ['action' => 'view', $biditem->id]) ?>
+    <?php if ($authuser['id'] === $biditem->user_id): ?>
+    <?= $this->Form->postLink(__('Delete'), ['action' => 'delete', $biditem->id], ['confirm' => '削除します。よろしいですか？']) ?>
+    <?php endif; ?>
 </td>
 </tr>
 <?php endforeach; ?>

@@ -27,6 +27,7 @@ class Bidmessage extends Entity
      * @var array
      */
     protected $_accessible = [
+        'biditem_id' => true,
         'bidinfo_id' => true,
         'user_id' => true,
         'message' => true,

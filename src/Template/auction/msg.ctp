@@ -3,6 +3,7 @@
   <h3>※メッセージ情報</h3>
   <h6>※メッセージを送信する</h6>
   <?= $this->Form->create($bidmsg) ?>
+  <?= $this->Form->hidden('biditem_id', ['value' => $bidinfo->biditem_id]) ?>
   <?= $this->Form->hidden('bidinfo_id', ['value' => $bidinfo->id]) ?>
   <?= $this->Form->hidden('user_id', ['value' => $authuser['id']]) ?>
   <?= $this->Form->textarea('message', ['rows' => 2]) ?>
