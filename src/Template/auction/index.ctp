@@ -3,6 +3,7 @@
 <table cellpadding="0" cellspacing="0">
 <thead>
 <tr>
+<th scope="col"></th>
 <th class="main" scope="col"><?= $this->Paginator->sort('name') ?></th>
 <th scope="col"><?= $this->Paginator->sort('finished') ?></th>
 <th scope="col"><?= $this->Paginator->sort('endtime') ?></th>
@@ -12,6 +13,7 @@
 <tbody>
 <?php foreach ($auction as $biditem) : ?>
 <tr>
+<td><?= $this->Html->image('../upimg/' . $biditem->file_name, array('width' => 200)) ?></td>
 <td><?= h($biditem->name) ?></td>
 <td><?= h($biditem->finished ? 'Finished':'') ?></td>
 <td><?= h($biditem->endtime) ?></td>
