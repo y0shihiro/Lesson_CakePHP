@@ -29,6 +29,8 @@ created
 ==>Bidinfo
 (hasMany / Bidrequests) id : biditem_id
 ==>Bidrequests
+(hasMany / Bidmessages) id : biditem_id
+==>Bidmessages
 
 [Bidinfo]
 ・落札情報
@@ -61,6 +63,7 @@ created
 [Bidmessages]
 ・取引メッセージ
 id
+biditem_id
 bidinfo_id
 user_id
 message
@@ -68,6 +71,8 @@ created
 -
 (belongTo / Users) user_id : id
 ==>Users
+(belongTo / Biditems) biditem_id : id
+==>Biditems
 (belongTo / Bidinfo) bidinfo_id : id
 ==>Bidinfo
 

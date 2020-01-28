@@ -197,4 +197,35 @@ class AuctionController extends AuctionBaseController
         ])->toArray();
         $this->set(compact('biditems'));
     }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id test
+     * @return mixed
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $biditem = $this->Biditems->get($id);
+        $dir = realpath(WWW_ROOT . "/upimg");
+        try {
+            $del_file = new File($dir . "/" . $biditem->file_name);
+            if ($del_file->delete()) {
+                $biditem['file'] = "";
+            } else {
+                throw new RuntimeException('ファイルの削除ができませんでした.');
+            }
+        } catch (RuntimeException $e) {
+            $this->log($e->getMessage(), LOG_DEBUG);
+            $this->log($biditem->file_name, LOG_DEBUG);
+        }
+        if ($this->Biditems->delete($biditem)) {
+            $this->Flash->success(__('商品を削除しました。'));
+        } else {
+            $this->Flash->error(__('商品の削除に失敗しました。;'));
+        }
+
+        return $this->redirect(['action' => 'index']);
+    }
 }
