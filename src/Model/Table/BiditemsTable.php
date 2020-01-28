@@ -47,10 +47,16 @@ class BiditemsTable extends Table
             'joinType' => 'INNER'
         ]);
         $this->hasOne('Bidinfo', [
-            'foreignKey' => 'biditem_id'
+            'foreignKey' => 'biditem_id',
+            'dependent' => true
         ]);
         $this->hasMany('Bidrequests', [
-            'foreignKey' => 'biditem_id'
+            'foreignKey' => 'biditem_id',
+            'dependent' => true
+        ]);
+        $this->hasMany('Bidmessages', [
+            'foreignKey' => 'biditem_id',
+            'dependent' => true
         ]);
     }
 
@@ -71,6 +77,11 @@ class BiditemsTable extends Table
             ->maxLength('name', 100)
             ->requirePresence('name', 'create')
             ->notEmptyString('name');
+
+        $validator
+            ->scalar('file_name')
+            ->maxLength('file_name', 100)
+            ->allowEmptyString('file_name', null, 'create');
 
         $validator
             ->boolean('finished')

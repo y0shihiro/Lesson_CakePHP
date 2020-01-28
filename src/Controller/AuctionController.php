@@ -4,7 +4,10 @@ namespace App\Controller;
 use App\Controller\AppController;
 
 use Cake\Event\Event;
+use Cake\Filesystem\File;
+use Cake\Filesystem\Folder;
 use Exception;
+use RuntimeException;
 
 class AuctionController extends AuctionBaseController
 {
@@ -87,8 +90,18 @@ class AuctionController extends AuctionBaseController
     public function add()
     {
         $biditem = $this->Biditems->newEntity();
-        if ($this->request->isPost()) {
-            $biditem = $this->Biditems->patchEntity($biditem, $this->request->getData());
+        if ($this->request->is(['patch', 'post', 'put'])) {
+            $this->log($this->request->data['file_name'], LOG_DEBUG);
+            $biditem = $this->Biditems->patchEntity($biditem, $this->request->data);
+            $dir = realpath(WWW_ROOT . "upimg/");
+            $limitFileSize = 1024 * 1024;
+            try {
+                $this->loadComponent('UploadImage');
+                $biditem->file_name = $this->UploadImage->fileUpload($this->request->data['file_name'], $dir, $limitFileSize);
+            } catch (RuntimeException $e) {
+                $this->Flash->error(__('ファイルのアップロードができませんでした.'));
+                $this->Flash->error(__($e->getMessage()));
+            }
             if ($this->Biditems->save($biditem)) {
                 $this->Flash->success(__('保存しました。'));
 
@@ -183,5 +196,36 @@ class AuctionController extends AuctionBaseController
         'limit' => 10
         ])->toArray();
         $this->set(compact('biditems'));
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @param [type] $id test
+     * @return mixed
+     */
+    public function delete($id = null)
+    {
+        $this->request->allowMethod(['post', 'delete']);
+        $biditem = $this->Biditems->get($id);
+        $dir = realpath(WWW_ROOT . "/upimg");
+        try {
+            $del_file = new File($dir . "/" . $biditem->file_name);
+            if ($del_file->delete()) {
+                $biditem['file'] = "";
+            } else {
+                throw new RuntimeException('ファイルの削除ができませんでした.');
+            }
+        } catch (RuntimeException $e) {
+            $this->log($e->getMessage(), LOG_DEBUG);
+            $this->log($biditem->file_name, LOG_DEBUG);
+        }
+        if ($this->Biditems->delete($biditem)) {
+            $this->Flash->success(__('商品を削除しました。'));
+        } else {
+            $this->Flash->error(__('商品の削除に失敗しました。;'));
+        }
+
+        return $this->redirect(['action' => 'index']);
     }
 }
